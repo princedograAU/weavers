@@ -14,22 +14,20 @@ jobs:
   run-linters:
     name: Run linters
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [14]
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node_version: ${{ matrix.node_version }}
 
-      # ESLint and Prettier must be in `package.json`
-      - name: Install Node.js dependencies
-        run: npm ci
-
-      - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          eslint: true
-          prettier: true
+      - name: run CI
+        run: |
+          yarn install
+          yarn lint
